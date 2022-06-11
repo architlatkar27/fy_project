@@ -3,6 +3,9 @@ class Data:
         self.value = value
         self.nodes = [node, ]
 
+    def __str__(self) -> str:
+        return "value: {} nodes: {}\n".format(self.value, self.nodes)
+    
     def add_node(self, node):
         self.nodes.append(node)
 
@@ -52,10 +55,11 @@ class BTree:
     def insert_non_full(self, x, k):
         # k is the insertion key of the form (key, containerID)
         # x is the node in which it is to be inserted
-        val, node = k
+        # val, node = k
+        print(k)
         i = len(x.keys) - 1
         if x.leaf:
-            # x.keys.append(Data(None))
+            x.keys.append(Data(None, None))
             while i >= 0 and k[0] < x.keys[i].value:
                 print("i: {}".format(i))
                 x.keys[i + 1] = x.keys[i]
