@@ -9,12 +9,20 @@ from bson.json_util import loads, dumps
 
 app = Flask(__name__)
 
-url = "mongors1n1"
-
 client = MongoClient("localhost", 27017)
 
 db = client.my_db
 my_collection = db.people
+
+
+
+@app.route('/test', methods=['GET'])
+def test():
+    '''
+    test
+    '''
+    print("success")
+    return "success"
 
 @app.route('/execute', methods=['GET'])
 def query_executor():
@@ -37,7 +45,8 @@ def insert():
     #my_collection.insert_one()
 
 if __name__ == '__main__':
-  
+    print("starting...")
     # run() method of Flask class runs the application 
     # on the local development server.
-    app.run()
+    app.run(host="0.0.0.0", port=8080)
+
