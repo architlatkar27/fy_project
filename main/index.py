@@ -41,7 +41,7 @@ class BTree:
         # Insert node
     def insert(self, k):
         root = self.root
-        print(root)
+        # print(root)
         if len(root.keys) == (2 * self.t) - 1:
             temp = BTreeNode()
             self.root = temp
@@ -53,23 +53,25 @@ class BTree:
 
         # Insert nonfull
     def insert_non_full(self, x, k):
-        # k is the insertion key of the form (key, containerID)
-        # x is the node in which it is to be inserted
+        '''
+        k is the insertion key of the form (key, containerID)
+        x is the node in which it is to be inserted
+        '''
         # val, node = k
         print(k)
         i = len(x.keys) - 1
         if x.leaf:
-            x.keys.append(Data(None, None))
+            x.keys.append(Data(-1, -1))
             while i >= 0 and k[0] < x.keys[i].value:
                 print("i: {}".format(i))
                 x.keys[i + 1] = x.keys[i]
                 i -= 1
             if x.keys[i].value != k[0]:
                 x.keys[i + 1] = Data(k[0], k[1])
-            else:
-                x.keys.nodes.append(k[1])
+            elif x.keys[i].value == k[0] and k[1] not in x.keys[i].nodes:
+                x.keys[i].nodes.append(k[1])
         else:
-            while i >= 0 and k[0] < x.keys[i].value:
+            while i >= 0 and k[0] <= x.keys[i].value:
                 i -= 1
             i += 1
             if len(x.child[i].keys) == (2 * self.t) - 1:
@@ -131,15 +133,17 @@ class BTree:
 def main():
     B = BTree(3)
 
-    for i in range(10):
+    for i in range(30):
         # B.insert((i, 2 * i))
-        B.insert((2*i, i))
-        print("insert iteration: {}".format(i))
+        # print("insert iteration: {}".format(i))
+        B.insert((i%3, i%4))
         # B.print_tree(B.root)
 
     B.print_tree(B.root)
 
-    print(B.search_key(8))
+    node, i = B.search_key(2)
+    print(node)
+    print(i)
 
 
 if __name__ == '__main__':

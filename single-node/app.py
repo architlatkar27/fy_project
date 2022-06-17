@@ -9,6 +9,8 @@ from bson.json_util import loads, dumps
 
 app = Flask(__name__)
 
+url = "mongors1n1"
+
 client = MongoClient("localhost", 27017)
 
 db = client.my_db
