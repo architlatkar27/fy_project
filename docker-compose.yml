@@ -117,7 +117,7 @@ services:
     ports:
       - "5001:8080"
     volumes:
-      - ./app/main:/main_node
+      - ./app/main/app
   single_node:
     container_name: single_node
     build:
@@ -132,7 +132,7 @@ services:
     ports:
       - "5002:8080"
     volumes:
-      - ./app/single-node:/single_node
+      - ./app/single-node:/app
     
 # volumes:
 #     main_node: {}
