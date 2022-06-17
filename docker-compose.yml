@@ -6,60 +6,48 @@ services:
     image: mongo:3.0.14
     environment:
       TERM: xterm
-    # ports:
-    #   - 5001:27017
     volumes:
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n1:/data/db
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos1:/data/db
 
   mongos2:
     container_name: mongos2
     image: mongo:3.0.14
     environment:
       TERM: xterm
-    # ports:
-    #   - 5002:27017
     volumes:
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n2:/data/db
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos2:/data/db
 
   mongos3:
     container_name: mongos3
     image: mongo:3.0.14
     environment:
       TERM: xterm
-    # ports:
-    #   - 5003:27017
     volumes:
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n3:/data/db
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos3:/data/db
 
   mongos4:
     container_name: mongos4
     image: mongo:3.0.14
     environment:
       TERM: xterm
-    # ports:
-    #   - 5004:27017
     volumes:
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n1:/data/db
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos4:/data/db
 
   mongos5:
     container_name: mongos5
     image: mongo:3.0.14
     environment:
       TERM: xterm
-    # ports:
-    #   - 5005:27017
     volumes:
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n2:/data/db
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos5:/data/db
 
   mongos6:
     container_name: mongos6
     image: mongo:3.0.14
     environment:
       TERM: xterm
-    # ports:
-    #   - 5006:27017
     volumes:
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n3:/data/db
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos6:/data/db
 
   mongoexpress1:
       container_name: mongoexpress1
