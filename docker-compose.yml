@@ -1,6 +1,7 @@
 version: "2"
 services:
 
+<<<<<<< HEAD
   mongors1n1:
     container_name: mongors1n1
     image: mongo:3.0.14
@@ -150,3 +151,107 @@ services:
   #         - mongors1n2
   #     environment: 
   #         - ME_CONFIG_MONGODB_URL=mongodb://mongors1n2:27017
+=======
+  mongos1:
+    container_name: mongos1
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos1:/data/db
+
+  mongos2:
+    container_name: mongos2
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos2:/data/db
+
+  mongos3:
+    container_name: mongos3
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos3:/data/db
+
+  mongos4:
+    container_name: mongos4
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos4:/data/db
+
+  mongos5:
+    container_name: mongos5
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos5:/data/db
+
+  mongos6:
+    container_name: mongos6
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongos6:/data/db
+
+  mongoexpress1:
+      container_name: mongoexpress1
+      image: mongo-express
+      ports:
+          - "8001:8081"
+      links:
+          - mongos1
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos1:27017
+  mongoexpress2:
+      container_name: mongoexpress2
+      image: mongo-express
+      ports:
+          - "8002:8081"
+      links:
+          - mongos2
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos2:27017
+  mongoexpress3:
+      container_name: mongoexpress3
+      image: mongo-express
+      ports:
+          - "8003:8081"
+      links:
+          - mongos3
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos3:27017
+  mongoexpress4:
+      container_name: mongoexpress4
+      image: mongo-express
+      ports:
+          - "8004:8081"
+      links:
+          - mongos4
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos4:27017
+  mongoexpress5:
+      container_name: mongoexpress5
+      image: mongo-express
+      ports:
+          - "8005:8081"
+      links:
+          - mongos5
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos5:27017
+  mongoexpress6:
+      container_name: mongoexpress6
+      image: mongo-express
+      ports:
+          - "8006:8081"
+      links:
+          - mongos6
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos6:27017
+>>>>>>> ec1a11ed0b21c8926ed3ab15a7fa149803582bdd
