@@ -1,152 +1,117 @@
 version: "2"
 services:
 
-  mongors1n1:
-    container_name: mongors1n1
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --replSet mongors1 --dbpath /data/db --nojournal --oplogSize 16 --noauth
-    environment:
-      TERM: xterm
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n1:/data/db
-
-  mongors1n2:
-    container_name: mongors1n2
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --replSet mongors1 --dbpath /data/db --nojournal --oplogSize 16 --noauth
-    environment:
-      TERM: xterm
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n2:/data/db
-
-  mongors1n3:
-    container_name: mongors1n3
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --replSet mongors1 --dbpath /data/db --nojournal --oplogSize 16 --noauth
-    environment:
-      TERM: xterm
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n3:/data/db
-
-  mongors2n1:
-    container_name: mongors2n1
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --replSet mongors2 --dbpath /data/db --nojournal --oplogSize 16 --noauth
-    environment:
-      TERM: xterm
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n1:/data/db
-
-  mongors2n2:
-    container_name: mongors2n2
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --replSet mongors2 --dbpath /data/db --nojournal --oplogSize 16 --noauth
-    environment:
-      TERM: xterm
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n2:/data/db
-
-  mongors2n3:
-    container_name: mongors2n3
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --replSet mongors2 --dbpath /data/db --nojournal --oplogSize 16 --noauth
-    environment:
-      TERM: xterm
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n3:/data/db
-
-  mongocfg1:
-    container_name: mongocfg1
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --dbpath /data/db --configsvr --noauth --port 27017
-    environment:
-      TERM: xterm
-    expose:
-         - "27017"
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongocfg1:/data/db
-
-  mongocfg2:
-    container_name: mongocfg2
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --dbpath /data/db --configsvr --noauth --port 27017
-    environment:
-      TERM: xterm
-    expose:
-         - "27017"
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongocfg2:/data/db
-
-  mongocfg3:
-    container_name: mongocfg3
-    image: mongo:3.0.14
-    command: mongod --noprealloc --smallfiles --dbpath /data/db --configsvr --noauth --port 27017
-    environment:
-      TERM: xterm
-    expose:
-         - "27017"
-    volumes:
-      # - /etc/localtime:/etc/localtime:ro
-      - /home/abhishekvtangod/Documents/fy_project/data/mongocfg3:/data/db
-
   mongos1:
     container_name: mongos1
     image: mongo:3.0.14
-    depends_on:
-      - mongocfg1
-      - mongocfg2
-      - mongocfg3
-    command: mongos --configdb mongocfg1:27017,mongocfg2:27017,mongocfg3:27017 --port 27017
-    ports:
-      - 27017:27017
-    # volumes:
-    #   - /etc/localtime:/etc/localtime:ro
+    environment:
+      TERM: xterm
+    # ports:
+    #   - 5001:27017
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n1:/data/db
 
   mongos2:
     container_name: mongos2
     image: mongo:3.0.14
-    depends_on:
-      - mongocfg1
-      - mongocfg2
-      - mongocfg3
-    command: mongos --configdb mongocfg1:27017,mongocfg2:27017,mongocfg3:27017 --port 27017
-    ports:
-      - 27018:27017
-    # volumes:
-    #   - /etc/localtime:/etc/localtime:ro
+    environment:
+      TERM: xterm
+    # ports:
+    #   - 5002:27017
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n2:/data/db
 
-  mongoexpress:
-      container_name: mongoexpress
+  mongos3:
+    container_name: mongos3
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    # ports:
+    #   - 5003:27017
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongors1n3:/data/db
+
+  mongos4:
+    container_name: mongos4
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    # ports:
+    #   - 5004:27017
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n1:/data/db
+
+  mongos5:
+    container_name: mongos5
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    # ports:
+    #   - 5005:27017
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n2:/data/db
+
+  mongos6:
+    container_name: mongos6
+    image: mongo:3.0.14
+    environment:
+      TERM: xterm
+    # ports:
+    #   - 5006:27017
+    volumes:
+      - /home/abhishekvtangod/Documents/fy_project/data/mongors2n3:/data/db
+
+  mongoexpress1:
+      container_name: mongoexpress1
       image: mongo-express
       ports:
-          - "8081:8081"
+          - "8001:8081"
       links:
           - mongos1
       environment: 
           - ME_CONFIG_MONGODB_URL=mongodb://mongos1:27017
-  mongoexpress1n1:
-      container_name: mongoexpress1n1
+  mongoexpress2:
+      container_name: mongoexpress2
       image: mongo-express
       ports:
-          - "8082:8081"
+          - "8002:8081"
       links:
-          - mongors1n1
+          - mongos2
       environment: 
-          - ME_CONFIG_MONGODB_URL=mongodb://mongors1n1:27017
-  mongoexpress1n2:
-      container_name: mongoexpress1n2
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos2:27017
+  mongoexpress3:
+      container_name: mongoexpress3
       image: mongo-express
       ports:
-          - "8083:8081"
+          - "8003:8081"
       links:
-          - mongors1n2
+          - mongos3
       environment: 
-          - ME_CONFIG_MONGODB_URL=mongodb://mongors1n2:27017
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos3:27017
+  mongoexpress4:
+      container_name: mongoexpress4
+      image: mongo-express
+      ports:
+          - "8004:8081"
+      links:
+          - mongos4
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos4:27017
+  mongoexpress5:
+      container_name: mongoexpress5
+      image: mongo-express
+      ports:
+          - "8005:8081"
+      links:
+          - mongos5
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos5:27017
+  mongoexpress6:
+      container_name: mongoexpress6
+      image: mongo-express
+      ports:
+          - "8006:8081"
+      links:
+          - mongos6
+      environment: 
+          - ME_CONFIG_MONGODB_URL=mongodb://mongos6:27017
