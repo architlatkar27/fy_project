@@ -9,10 +9,10 @@ from bson.json_util import loads, dumps
 
 app = Flask(__name__)
 
-temp = "mongos1"
+#temp = "mongos1"
 temp1 = "localhost"
 shards = ["mongos1", "mongos2", "mongos3", "mongos4", "mongos5", "mongos6"]
-client = MongoClient(temp, 27017)
+client = MongoClient("localhost", 27017)
 
 db = client.my_db
 my_collection = db.people

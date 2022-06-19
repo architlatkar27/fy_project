@@ -4,6 +4,9 @@ import json
 import index
 from threading import Thread
 import threading
+from requests import post, get
+
+
 app = Flask(__name__)
 
 class ThreadWithReturnValue(Thread):
@@ -22,6 +25,7 @@ class ThreadWithReturnValue(Thread):
 
 
 root = 0 # initialize root with index tree root. maybe for now we can move the init part over here.
+nodes = []
 
 def initializer():
     pass
@@ -35,7 +39,7 @@ def test():
     return "success 200 main"
 
 @app.route('/execute', methods=['GET'])
-def query_collector():
+def query_collector(request):
     '''
     Recieve query string
     call function to get node list
@@ -52,7 +56,7 @@ def nodeSelector(data):
     '''
     Recieve a request, use the index to determine subset of nodes to send the data to.
     '''
-    value = data[0] # check how to get the data.
+    value = data # check how to get the data.
     x = index.BTree.search_key(root, value)
     return x.nodes
 
@@ -69,6 +73,7 @@ def consildator(data, nodes):
         answers.append(x.join())
     
     # need to see how to combine the answers returned over here
+    
     return answers
 
 def query_forward(data, node):
@@ -76,6 +81,9 @@ def query_forward(data, node):
     forward query to individual node and give back the response
     '''
     # send request to single node app
+    r = get(url=node+"/execute", data=data)
+
+    
 
 
 if __name__ == '__main__':
