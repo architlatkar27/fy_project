@@ -63,7 +63,7 @@ class BTree:
         if x.leaf:
             x.keys.append(Data(-1, -1))
             while i >= 0 and k[0] < x.keys[i].value:
-                print("i: {}".format(i))
+                # print("i: {}".format(i))
                 x.keys[i + 1] = x.keys[i]
                 i -= 1
             if x.keys[i].value != k[0]:
@@ -111,9 +111,9 @@ class BTree:
             while i < len(x.keys) and k > x.keys[i].value:
                 i += 1
             if i < len(x.keys) and k == x.keys[i].value:
-                return (x, i)
+                return x.keys[i]
             elif x.leaf:
-                return None
+                return False
             else:
                 return self.search_key(k, x.child[i])
 
@@ -130,21 +130,21 @@ class BTree:
         '''
         pass
 
-def main():
-    B = BTree(3)
+# def main():
+    # B = BTree(3)
 
-    for i in range(30):
-        # B.insert((i, 2 * i))
-        # print("insert iteration: {}".format(i))
-        B.insert((i%3, i%4))
-        # B.print_tree(B.root)
+    # for i in range(30):
+    #     # B.insert((i, 2 * i))
+    #     # print("insert iteration: {}".format(i))
+    #     B.insert((i%3, i%4))
+    #     # B.print_tree(B.root)
 
-    B.print_tree(B.root)
+    # B.print_tree(B.root)
 
-    node, i = B.search_key(2)
-    print(node)
-    print(i)
+    # node, i = B.search_key(2)
+    # print(node)
+    # print(i)
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
