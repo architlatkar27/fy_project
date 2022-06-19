@@ -7,120 +7,138 @@ services:
     restart: unless-stopped
     environment:
       TERM: xterm
-    # volumes:
-    #   - mongovolume:/data/db
+    volumes:
+      - mongovolume1:/data/db
  
 
-  # mongos2:
-  #   container_name: mongos2
-  #   image: mongo:latest
-  #   restart: unless-stopped
-  #   environment:
-  #     TERM: xterm
-  #   # volumes:
-  #   #   - mongovolume:/data/db
+  mongos2:
+    container_name: mongos2
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume2:/data/db
 
-  # mongos3:
-  #   container_name: mongos3
-  #   image: mongo:latest
-  #   restart: unless-stopped
-  #   environment:
-  #     TERM: xterm
-  #   # volumes:
-  #   #   - mongovolume:/data/db
+  mongos3:
+    container_name: mongos3
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume3:/data/db
 
-  # mongos4:
-  #   container_name: mongos4
-  #   image: mongo:latest
-  #   restart: unless-stopped
-  #   environment:
-  #     TERM: xterm
-  #   # volumes:
-  #   #   - mongovolume:/data/db
+  mongos4:
+    container_name: mongos4
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume4:/data/db
 
-  # mongos5:
-  #   container_name: mongos5
-  #   image: mongo:latest
-  #   restart: unless-stopped
-  #   environment:
-  #     TERM: xterm
-  #   # volumes:
-  #   #   - mongovolume:/data/db
+  mongos5:
+    container_name: mongos5
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume5:/data/db
 
-  # mongos6:
-  #   container_name: mongos6
-  #   image: mongo:latest
-  #   restart: unless-stopped
-  #   environment:
-  #     TERM: xterm
-  #   # volumes:
-  #   #   - mongovolume:/data/db
+  mongos6:
+    container_name: mongos6
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume6:/data/db
       
   mongoexpress1:
     container_name: mongoexpress1
     image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos1
     ports:
         - "8001:8081"
     links:
         - mongos1
     environment: 
         - ME_CONFIG_MONGODB_URL=mongodb://mongos1:27017
-  # mongoexpress2:
-  #   container_name: mongoexpress2
-  #   image: mongo-express
-  #   ports:
-  #       - "8002:8081"
-  #   links:
-  #       - mongos2
-  #   environment: 
-  #       - ME_CONFIG_MONGODB_URL=mongodb://mongos2:27017
-  # mongoexpress3:
-  #   container_name: mongoexpress3
-  #   image: mongo-express
-  #   ports:
-  #       - "8003:8081"
-  #   links:
-  #       - mongos3
-  #   environment: 
-  #       - ME_CONFIG_MONGODB_URL=mongodb://mongos3:27017
-  # mongoexpress4:
-  #   container_name: mongoexpress4
-  #   image: mongo-express
-  #   ports:
-  #       - "8004:8081"
-  #   links:
-  #       - mongos4
-  #   environment: 
-  #       - ME_CONFIG_MONGODB_URL=mongodb://mongos4:27017
-  # mongoexpress5:
-  #   container_name: mongoexpress5
-  #   image: mongo-express
-  #   ports:
-  #       - "8005:8081"
-  #   links:
-  #       - mongos5
-  #   environment: 
-  #       - ME_CONFIG_MONGODB_URL=mongodb://mongos5:27017
-  # mongoexpress6:
-  #   container_name: mongoexpress6
-  #   image: mongo-express
-  #   ports:
-  #       - "8006:8081"
-  #   links:
-  #       - mongos6
-  #   environment: 
-  #       - ME_CONFIG_MONGODB_URL=mongodb://mongos6:27017
+  mongoexpress2:
+    container_name: mongoexpress2
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos1
+    ports:
+        - "8002:8081"
+    links:
+        - mongos2
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos2:27017
+  mongoexpress3:
+    container_name: mongoexpress3
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos1
+    ports:
+        - "8003:8081"
+    links:
+        - mongos3
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos3:27017
+  mongoexpress4:
+    container_name: mongoexpress4
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos1
+    ports:
+        - "8004:8081"
+    links:
+        - mongos4
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos4:27017
+  mongoexpress5:
+    container_name: mongoexpress5
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos1
+    ports:
+        - "8005:8081"
+    links:
+        - mongos5
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos5:27017
+  mongoexpress6:
+    container_name: mongoexpress6
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos1
+    ports:
+        - "8006:8081"
+    links:
+        - mongos6
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos6:27017
   main_node:
     container_name: main_node
     build:
       context: ./app/main
     depends_on:
       - mongos1
-      # - mongos2
-      # - mongos3
-      # - mongos4
-      # - mongos5
-      # - mongos6
+      - mongos2
+      - mongos3
+      - mongos4
+      - mongos5
+      - mongos6
     ports:
       - "5001:8080"
     volumes:
@@ -131,15 +149,20 @@ services:
       context: ./app/single-node
     depends_on:
       - mongos1
-      # - mongos2
-      # - mongos3
-      # - mongos4
-      # - mongos5
-      # - mongos6
+      - mongos2
+      - mongos3
+      - mongos4
+      - mongos5
+      - mongos6
     ports:
       - "5002:8080"
     volumes:
       - ./app/single-node:/app
     
-# volumes:
-#   mongovolume: 
+volumes:
+  mongovolume1: 
+  mongovolume2: 
+  mongovolume3: 
+  mongovolume4: 
+  mongovolume5: 
+  mongovolume6: 
