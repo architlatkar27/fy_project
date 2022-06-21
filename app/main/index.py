@@ -34,9 +34,10 @@ class BTree:
     print_tree(): prints complete tree
     search_key(): search for key in the btree
     '''
-    def __init__(self, t):
+    def __init__(self, t, default):
         self.root = BTreeNode(True)
         self.t = t
+        self.default = default
 
         # Insert node
     def insert(self, k):
@@ -58,10 +59,10 @@ class BTree:
         x is the node in which it is to be inserted
         '''
         # val, node = k
-        print(k)
+        # print(k)
         i = len(x.keys) - 1
         if x.leaf:
-            x.keys.append(Data(-1, -1))
+            x.keys.append(Data(self.default, -1))
             while i >= 0 and k[0] < x.keys[i].value:
                 # print("i: {}".format(i))
                 x.keys[i + 1] = x.keys[i]
