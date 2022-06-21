@@ -93,6 +93,7 @@ def query_collector():
         return "no data found"
     answer = consildator(data, x.nodes)
     t2 = time.time()
+    answer.append({"execution time":str(t2-t1)})
     print("Execution time: {}".format(t2-t1))
     return json.dumps(answer)
     
