@@ -91,9 +91,11 @@ def query_collector():
     x = nodeSelector(data, key)
     if x is False:
         return "no data found"
+    n_nodes = len(x.nodes)
     answer = consildator(data, x.nodes)
     t2 = time.time()
     answer.append({"execution time":str(t2-t1)})
+    answer.append({"number of nodes queried": str(n_nodes)})
     print("Execution time: {}".format(t2-t1))
     return json.dumps(answer)
     
