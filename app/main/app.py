@@ -1,4 +1,5 @@
 # from crypt import methods
+from itertools import count
 from flask import Flask,request
 import json
 from populate import init
@@ -10,12 +11,15 @@ from requests import post, get
 from index import BTree;
 from bson.json_util import dumps
 import time
+from collections import Counter
 
 app = Flask(__name__)
 
 shards = ["mongos1", "mongos2", "mongos3", "mongos4", "mongos5", "mongos6"]
 
 collections = {}
+
+indices = ["age", "salary"]
 
 trees = {
     "age": BTree(17, -1),
@@ -94,11 +98,10 @@ def query_collector():
     n_nodes = len(x.nodes)
     answer = consildator(data, x.nodes)
     t2 = time.time()
-    answer.append({"execution time":str(t2-t1)})
+    answer.append({"execution time": str(t2-t1)})
     answer.append({"number of nodes queried": str(n_nodes)})
     print("Execution time: {}".format(t2-t1))
     return json.dumps(answer)
-    
 
 def nodeSelector(data, key):
     '''
@@ -134,6 +137,44 @@ def query_forward(data, node):
     return resp
 
 
+@app.route('/write', methods=['GET'])
+def write_query():
+    '''
+    take the data from the json
+    query different indices and obtain the different nodes
+    select the node with max frequency -- if no nodes then just select random node
+    insert into the index
+    insert data in that node
+    '''
+
+    data = request.get_json()
+    node = poll(data)
+    insert_index(data, node)
+    result = collections[node].insert_one(data)
+
+    return "write was successful in node {}".format(node)
+
+
+def insert_index(data, node):
+    for index in indices:
+        trees[index].insert((data[index], node))
+    
+
+def poll(data):
+    '''
+    take data and then poll all of the indices for the prefered node
+    '''
+    possible_nodes = []
+    for index in indices:
+        val = data[index]
+        x = trees[index].search_key(val)
+        if x is False:
+            continue
+        possible_nodes.extend(x.nodes)
+    return Counter(possible_nodes).most_common(1)[0][0]
+
+
+    
 if __name__ == '__main__':
     print("starting main...")
     # run() method of Flask class runs the application 

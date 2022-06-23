@@ -19,7 +19,7 @@ def create_names(fake, cont, coll, trees):
         genSurname = fake.last_name()
         genJob = fake.job()
         genCountry = fake.country()
-        genSalary = randrange(10000, 100000)
+        genSalary = randrange(10000, 100000, 1000)
         genAge = randrange(1, 100)
         result = coll.insert_one(
             {
