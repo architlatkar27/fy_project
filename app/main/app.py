@@ -19,29 +19,47 @@ shards = ["mongos1", "mongos2", "mongos3", "mongos4", "mongos5", "mongos6"]
 
 collections = {}
 
-indices = ["age", "salary"]
+indices = []
 
-trees = {
-    "age": BTree(17, -1),
-    "salary": BTree(17, -1)
-}
+trees = {}
 
-B = BTree(15, -1)
-
+@app.route('/startup', methods=['GET'])
 def startup():
-
+    global indices
+    global trees
+    global collections
+    global shards
     # make connections, db and map collections to shards
-    for shard in shards:
-        client = MongoClient(shard, 27017)
-        db = client.my_db
-        collection = db.people
-        collections[shard] = collection
+    dbconfig = request.get_json()
+    if not dbconfig:
+        for shard in shards:
+            client = MongoClient(shard, 27017)
+            db = client.my_db
+            collection = db.people
+            collections[shard] = collection
 
-    
-    init(collections, trees)
-    # B.print_tree(B.root)
-    trees["age"].print_tree(trees["age"].root)
-    trees["salary"].print_tree(trees["salary"].root)
+        indices = ["age", "salary"]
+        trees = {
+            "age": BTree(20, -1),
+            "salary": BTree(20, -1)
+        }
+        init(collections, trees)
+        # B.print_tree(B.root)
+        trees["age"].print_tree(trees["age"].root)
+        trees["salary"].print_tree(trees["salary"].root)
+        return "db with people initialized"
+    else:
+        # use pymongo to create db, create collection, create index, 
+        for shard in shards:
+            client = MongoClient(shard, 27017)
+            db = client[dbconfig["db_name"]]
+            collection = db[dbconfig["collection_name"]]
+            collections[shard] = collection
+        
+        for index in dbconfig["index_list"]:
+            indices.append(index["index_key"])
+            trees[index["index_key"]] = BTree(20, index["default"])
+        return "random db initialization complete"
     
 
 # Startup procedure - 
@@ -179,5 +197,25 @@ if __name__ == '__main__':
     print("starting main...")
     # run() method of Flask class runs the application 
     # on the local development server.
-    startup()
+    # startup()
+
     app.run(host="0.0.0.0", port=8080, debug=True)
+
+
+
+# # startup api
+
+# # call to initialize a new database
+# # send a json response - 
+# # {
+# #     "db": db_name,
+# #     "collection": collection_name,
+# #     "index list": [{
+# #       "index key": key,
+#         "default value": val
+# # }, "index2"]
+# # }
+# if its {
+#     "db": default
+# }
+# then go ahead with people database and populate it else just make the connection, index  and leave it as it is

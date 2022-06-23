@@ -38,6 +38,7 @@ class BTree:
         self.root = BTreeNode(True)
         self.t = t
         self.default = default
+        print("created btree")
 
         # Insert node
     def insert(self, k):
