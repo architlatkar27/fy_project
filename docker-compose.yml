@@ -1,4 +1,4 @@
-version: "3.1"
+version: "2.4"
 services:
 
   mongos1:
@@ -9,7 +9,9 @@ services:
       TERM: xterm
     volumes:
       - mongovolume1:/data/db
- 
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
 
   mongos2:
     container_name: mongos2
@@ -19,6 +21,9 @@ services:
       TERM: xterm
     volumes:
       - mongovolume2:/data/db
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
 
   mongos3:
     container_name: mongos3
@@ -28,6 +33,9 @@ services:
       TERM: xterm
     volumes:
       - mongovolume3:/data/db
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
 
   mongos4:
     container_name: mongos4
@@ -37,6 +45,9 @@ services:
       TERM: xterm
     volumes:
       - mongovolume4:/data/db
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
 
   mongos5:
     container_name: mongos5
@@ -46,6 +57,9 @@ services:
       TERM: xterm
     volumes:
       - mongovolume5:/data/db
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
 
   mongos6:
     container_name: mongos6
@@ -55,7 +69,59 @@ services:
       TERM: xterm
     volumes:
       - mongovolume6:/data/db
-      
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
+
+  mongos7:
+    container_name: mongos7
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume7:/data/db
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
+
+  mongos8:
+    container_name: mongos8
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume8:/data/db
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
+
+  mongos9:
+    container_name: mongos9
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume9:/data/db
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
+
+  mongos10:
+    container_name: mongos10
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      TERM: xterm
+    volumes:
+      - mongovolume10:/data/db
+    mem_limit: 2000m
+    mem_reservation: 2000m
+    cpus: 0.1
+
+
   mongoexpress1:
     container_name: mongoexpress1
     image: mongo-express
@@ -73,7 +139,7 @@ services:
     image: mongo-express
     restart: unless-stopped
     depends_on:
-      - mongos1
+      - mongos2
     ports:
         - "8002:8081"
     links:
@@ -85,7 +151,7 @@ services:
     image: mongo-express
     restart: unless-stopped
     depends_on:
-      - mongos1
+      - mongos3
     ports:
         - "8003:8081"
     links:
@@ -97,7 +163,7 @@ services:
     image: mongo-express
     restart: unless-stopped
     depends_on:
-      - mongos1
+      - mongos4
     ports:
         - "8004:8081"
     links:
@@ -109,26 +175,86 @@ services:
     image: mongo-express
     restart: unless-stopped
     depends_on:
-      - mongos1
+      - mongos5
     ports:
         - "8005:8081"
     links:
         - mongos5
     environment: 
         - ME_CONFIG_MONGODB_URL=mongodb://mongos5:27017
+
   mongoexpress6:
     container_name: mongoexpress6
     image: mongo-express
     restart: unless-stopped
     depends_on:
-      - mongos1
+      - mongos6
     ports:
         - "8006:8081"
     links:
         - mongos6
     environment: 
         - ME_CONFIG_MONGODB_URL=mongodb://mongos6:27017
+  
+
+  mongoexpress7:
+    container_name: mongoexpress7
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos7
+    ports:
+        - "8007:8081"
+    links:
+        - mongos7
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos7:27017
+  
+
+  mongoexpress8:
+    container_name: mongoexpress8
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos8
+    ports:
+        - "8008:8081"
+    links:
+        - mongos8
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos8:27017
+  
+
+  mongoexpress9:
+    container_name: mongoexpress9
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos9
+    ports:
+        - "8009:8081"
+    links:
+        - mongos9
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos9:27017
+  
+
+  mongoexpress10:
+    container_name: mongoexpress10
+    image: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongos10
+    ports:
+        - "8010:8081"
+    links:
+        - mongos10
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://mongos10:27017
+  
+
   main_node:
+    image: abhishekvtangod/main_node
     container_name: main_node
     build:
       context: ./app/main
@@ -139,11 +265,16 @@ services:
       - mongos4
       - mongos5
       - mongos6
+      - mongos7
+      - mongos8
+      - mongos9
+      - mongos10
     ports:
       - "5001:8080"
     volumes:
       - ./app/main:/app
   single_node:
+    image: abhishekvtangod/single_node
     container_name: single_node
     build:
       context: ./app/single-node
@@ -154,6 +285,10 @@ services:
       - mongos4
       - mongos5
       - mongos6
+      - mongos7
+      - mongos8
+      - mongos9
+      - mongos10
     ports:
       - "5002:8080"
     volumes:
@@ -166,3 +301,11 @@ volumes:
   mongovolume4: 
   mongovolume5: 
   mongovolume6: 
+  mongovolume7: 
+  mongovolume8: 
+  mongovolume9: 
+  mongovolume10: 
+
+# networks:
+#   default:
+#     driver: overlay
