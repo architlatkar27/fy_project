@@ -15,7 +15,9 @@ from collections import Counter
 
 app = Flask(__name__)
 
-shards = ["mongos1", "mongos2", "mongos3", "mongos4", "mongos5", "mongos6"]
+N = 7
+
+shards = ["mongos"+str(x) for x in range(1, N)]
 
 collections = {}
 
@@ -37,16 +39,22 @@ def startup():
             db = client.my_db
             collection = db.people
             collections[shard] = collection
+            collection.create_index('country')
+            collection.create_index('age')
+            collection.create_index('salary')
 
-        indices = ["age", "salary"]
+
+        indices = ["age", "salary", "country"]
         trees = {
             "age": BTree(20, -1),
-            "salary": BTree(20, -1)
+            "salary": BTree(20, -1),
+            "country": BTree(20, " ")
         }
         init(collections, trees)
         # B.print_tree(B.root)
         trees["age"].print_tree(trees["age"].root)
         trees["salary"].print_tree(trees["salary"].root)
+        trees["country"].print_tree(trees["country"].root)
         return "db with people initialized"
     else:
         # use pymongo to create db, create collection, create index, 
@@ -55,6 +63,8 @@ def startup():
             db = client[dbconfig["db_name"]]
             collection = db[dbconfig["collection_name"]]
             collections[shard] = collection
+            for index in dbconfig["index_list"]:
+                collection.create_index(index["index_key"])
         
         for index in dbconfig["index_list"]:
             indices.append(index["index_key"])
@@ -70,6 +80,9 @@ def startup():
 # do this `100 times`
 
 class ThreadWithReturnValue(Thread):
+    '''
+    A custom Thread class which allows 
+    '''
     def __init__(self, group=None, target=None, name=None,
                  args=(), kwargs={}, Verbose=None):
         Thread.__init__(self, group, target, name, args, kwargs)
@@ -125,6 +138,9 @@ def nodeSelector(data, key):
     '''
     Recieve a request, use the index to determine subset of nodes to send the data to.
     '''
+    global shards
+    if key not in indices:
+        return shards 
     value = data[key] 
     x = trees[key].search_key(value)
     return x

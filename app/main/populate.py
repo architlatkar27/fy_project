@@ -33,6 +33,7 @@ def create_names(fake, cont, coll, trees):
             )
         trees["age"].insert((genAge, cont))
         trees["salary"].insert((genSalary, cont))
+        trees["country"].insert((genCountry, cont))
         # B.insert(genJob,coll);
         # print('id: ' + str(result.inserted_id) + ' name: ' + genName)
 
