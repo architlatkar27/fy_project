@@ -246,7 +246,7 @@ services:
     depends_on:
       - mongos10
     ports:
-        - "8010:8081"
+        - "80010:8081"
     links:
         - mongos10
     environment: 
