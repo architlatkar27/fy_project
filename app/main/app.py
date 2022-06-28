@@ -15,7 +15,7 @@ from collections import Counter
 
 app = Flask(__name__)
 
-N = 7
+N = 11
 
 shards = ["mongos"+str(x) for x in range(1, N)]
 
