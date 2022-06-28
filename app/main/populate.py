@@ -14,7 +14,7 @@ def init(collections, trees):
 
 
 def create_names(fake, cont, coll, trees):
-    for x in range(10000):
+    for x in range(1000):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()

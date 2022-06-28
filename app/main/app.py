@@ -46,9 +46,9 @@ def startup():
 
         indices = ["age", "salary", "country"]
         trees = {
-            "age": BTree(50, -1),
-            "salary": BTree(50, -1),
-            "country": BTree(50, " ")
+            "age": BTree(20, -1),
+            "salary": BTree(20, -1),
+            "country": BTree(20, " ")
         }
         init(collections, trees)
         # B.print_tree(B.root)
