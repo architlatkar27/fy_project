@@ -14,14 +14,14 @@ import threading
 from requests import post, get
 from index import BTree;
 from bson.json_util import dumps
-import time
+from time import process_time
 import multiprocessing
 
 app = Flask(__name__)
 
-N = 10
+N = 9
 
-shards = ["mongos"+str(x) for x in range(1, N)]
+shards = ["mongos"+str(x) for x in range(1, N+1)]
 
 collections = {}
 
@@ -82,9 +82,13 @@ def search():
     if query_key in list(trees.keys()):
         idx = query_key
         tree = trees[idx]
+        t1_start = process_time() 
         shards_lst = list(tree.search_key(query_val))
-        print(shards_lst)
-        return str(search_shards(query_key, query_val, shards_lst))
+        res = search_shards(query_key, query_val, shards_lst)
+        t2_start = process_time() 
+        sz = len(res)
+        res.append({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        return str(res)
     else:
         return "index not found"
 

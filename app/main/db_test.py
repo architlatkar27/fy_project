@@ -17,28 +17,28 @@
 # xyz()
 
 
-import multiprocessing
+# import multiprocessing
 
-def xyz(key, return_list):
-    # lst = []
-    print(key)
-    for i in range(10):
-        # i["shard"] = shard
-        return_list.append(i)
-    # return lst
+# def xyz(key, return_list):
+#     # lst = []
+#     print(key)
+#     for i in range(10):
+#         # i["shard"] = shard
+#         return_list.append(i)
+#     # return lst
 
-def abc():
-    manager = multiprocessing.Manager()
-    return_list = manager.list()
-    jobs = []
-    for shard in range(6):
-        process = multiprocessing.Process(target=xyz, args=(5, return_list))
-        jobs.append(process)
-        process.start()
-        # lst.extend(data_shard_i)
+# def abc():
+#     manager = multiprocessing.Manager()
+#     return_list = manager.list()
+#     jobs = []
+#     for shard in range(6):
+#         process = multiprocessing.Process(target=xyz, args=(5, return_list))
+#         jobs.append(process)
+#         process.start()
+#         # lst.extend(data_shard_i)
 
-    for j in jobs:
-        j.join()
+#     for j in jobs:
+#         j.join()
     
-    return list(return_list)
-print(abc())
+#     return list(return_list)
+# print(abc())
