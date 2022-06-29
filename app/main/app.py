@@ -1,4 +1,5 @@
 # from crypt import methods
+from concurrent.futures import process
 import imp
 from itertools import count
 from this import s
@@ -14,8 +15,7 @@ from requests import post, get
 from index import BTree;
 from bson.json_util import dumps
 import time
-from collections import Counter
-
+import multiprocessing
 
 app = Flask(__name__)
 
@@ -91,18 +91,34 @@ def search():
     print("success")
     return "success 200 main"
 
-def search_shard(key, val, shard):
-    lst = []
-    for i in collections[shard].find({key:val}):
+def search_shard(key, val, shard, return_list):
+    # lst = []
+    print("Helllllo")
+    local_client = MongoClient(shard, 27017)
+    local_coll = local_client.my_db.people
+    # collection = db.people
+    for i in local_coll.find({key:val}):
         i["shard"] = shard
-        lst.append(i)
-    return lst
+        print(i)
+        return_list.append(i)
+    # return lst
 
 def search_shards(key, val, shards):
-    lst = []
+    manager = multiprocessing.Manager()
+    return_list = manager.list()
+    jobs = []
     for shard in shards:
-        lst.extend(search_shard(key, val, shard))
-    return lst
+        # data_shard_i = search_shard(key, val, shard)
+        # coll_shard = collections[shard]
+        process = multiprocessing.Process(target=search_shard, args=(key, val, shard, return_list))
+        jobs.append(process)
+        process.start()
+        # lst.extend(data_shard_i)
+
+    for j in jobs:
+        j.join()
+    print(return_list)
+    return return_list
 
     
 if __name__ == '__main__':
