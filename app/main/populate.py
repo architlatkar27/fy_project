@@ -7,13 +7,10 @@ import time
 def init(collections, trees):
     fake = Faker()
     
-    for k, v in collections.items():
-        create_names(fake, k, v, trees)
+    for shard_name, coll_ptr in collections.items():
+        create_names(fake, shard_name, coll_ptr, trees)
 
-
-
-
-def create_names(fake, cont, coll, trees):
+def create_names(fake, shard_name, coll_ptr, trees):
     for x in range(1000):
         genName = fake.first_name()
         genSurname = fake.last_name()
@@ -21,7 +18,7 @@ def create_names(fake, cont, coll, trees):
         genCountry = fake.country()
         genSalary = randrange(10000, 100000, 1000)
         genAge = randrange(1, 100)
-        result = coll.insert_one(
+        result = coll_ptr.insert_one(
             {
                 'name': genName,
                 'surname': genSurname,
@@ -31,9 +28,9 @@ def create_names(fake, cont, coll, trees):
                 'age': genAge
                 }
             )
-        trees["age"].insert((genAge, cont))
-        trees["salary"].insert((genSalary, cont))
-        trees["country"].insert((genCountry, cont))
+        trees["age"].insert(genAge, shard_name)
+        # trees["salary"].insert((genSalary, cont))
+        # trees["country"].insert((genCountry, cont))
         # B.insert(genJob,coll);
         # print('id: ' + str(result.inserted_id) + ' name: ' + genName)
 
