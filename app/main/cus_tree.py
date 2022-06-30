@@ -32,7 +32,7 @@ class Tree:
 
     # Search key in the tree
     def search_key(self, key):
-        print(self.nodes)
+        # print(self.nodes)
         if key in self.nodes.keys():
             return self.nodes[key].values
         else:

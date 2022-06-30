@@ -13,7 +13,7 @@ def init(collections, trees):
     return cnt/len(list(collections.items()))
 def create_names(fake, shard_name, coll_ptr, trees):
     cnt = 0
-    for x in range(10000):
+    for x in range(100):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()

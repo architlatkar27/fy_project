@@ -2,6 +2,7 @@
 from concurrent.futures import process
 import imp
 from itertools import count
+import re
 from this import s
 from flask import Flask,request
 import json
@@ -58,7 +59,7 @@ def startup():
     # t2_start = process_time() 
     # avg_tm = (t2_start - t1_start)
     # B.print_tree(B.root)
-    trees["age"].print_tree()
+    # trees["age"].print_tree()
     # trees["salary"].print_tree(trees["salary"].root)
     # trees["country"].print_tree(trees["country"].root)
     return "db with people initialized, avg_time for each write: " + str(avg_tm)
@@ -76,6 +77,13 @@ def test():
     test
     '''
     print("success")
+    x = []
+    for i in range(1, 5001):
+        temp = search_test("age", i)
+
+        with open('analytics.txt', 'a') as the_file:
+            the_file.write(temp)
+
     return "success 200 main"
 
 @app.route('/search', methods=['POST'])
@@ -83,7 +91,7 @@ def search():
     data = request.get_json()
     query_key = data["query_key"]
     query_val = data["query_val"]
-    print(list(trees.keys()))
+    # print(list(trees.keys()))
     if query_key in list(trees.keys()):
         idx = query_key
         tree = trees[idx]
@@ -101,6 +109,21 @@ def search():
     print("success")
     return "success 200 main"
 
+def search_test(query_key, query_val):    
+    if query_key in list(trees.keys()):
+        idx = query_key
+        tree = trees[idx]
+        t1_start = process_time() 
+        shards_lst = list(tree.search_key(query_val))
+        res = search_shards(query_key, query_val, shards_lst)
+        t2_start = process_time() 
+        sz = len(res)
+        # res.append({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        x = str(t2_start-t1_start) + "," + str(sz) + "," + str(len(shards_lst)) + "\n"
+        return x
+    return ""
+
+
 @app.route('/reindex', methods=['POST'])
 def reindex():
     data = request.get_json()
@@ -113,8 +136,8 @@ def reindex():
         local_coll.create_index((idx_key))
         for i in local_coll.find({}):
             trees[idx_key].insert(i[idx_key], shard)
-    trees[idx_key].print_tree()
-    print(list(trees.keys()))
+    # trees[idx_key].print_tree()
+    # print(list(trees.keys()))
     print("success")
     return "success 200 main"
 
@@ -126,7 +149,7 @@ def search_shard(key, val, shard, return_list):
     # collection = db.people
     for i in local_coll.find({key:val}):
         i["shard"] = shard
-        print(i)
+        # print(i)
         return_list.append(i)
     # return lst
 
@@ -144,7 +167,7 @@ def search_shards(key, val, shards):
 
     for j in jobs:
         j.join()
-    print(return_list)
+    # print(return_list)
     return return_list
 
     

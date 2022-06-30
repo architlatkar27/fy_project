@@ -43,5 +43,13 @@
 #     return list(return_list)
 # print(abc())
 
-from app import search
-print(search)
+# from app import search_test
+# for i in range(1,5001):
+#     x = search_test("age",i)
+#     x = str(x)
+#     if x not in '':
+#         print(x)
+#     with open('analytics.txt', 'w') as the_file:
+#         the_file.write(str(x))
+
+# print(search_test("age", 6))
