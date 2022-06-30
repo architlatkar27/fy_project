@@ -52,12 +52,16 @@ def startup():
         # "salary": BTree(30, -1),
         # "country": BTree(30, " ")
     }
-    init(collections, trees)
+    # t1_start = process_time() 
+
+    avg_tm = init(collections, trees)
+    # t2_start = process_time() 
+    # avg_tm = (t2_start - t1_start)
     # B.print_tree(B.root)
     trees["age"].print_tree()
     # trees["salary"].print_tree(trees["salary"].root)
     # trees["country"].print_tree(trees["country"].root)
-    return "db with people initialized"
+    return "db with people initialized, avg_time for each write: " + str(avg_tm)
 
 # Startup procedure - 
 # 1. make connections and then on to collections
@@ -79,6 +83,7 @@ def search():
     data = request.get_json()
     query_key = data["query_key"]
     query_val = data["query_val"]
+    print(list(trees.keys()))
     if query_key in list(trees.keys()):
         idx = query_key
         tree = trees[idx]
@@ -87,11 +92,29 @@ def search():
         res = search_shards(query_key, query_val, shards_lst)
         t2_start = process_time() 
         sz = len(res)
-        res.append({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
-        return str(res)
+        # res.append({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        x = ({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        return str(x)
     else:
-        return "index not found"
+        return "index not found " + str(list(trees.keys())) 
 
+    print("success")
+    return "success 200 main"
+
+@app.route('/reindex', methods=['POST'])
+def reindex():
+    data = request.get_json()
+    idx_key = data["index_key"]
+    trees[idx_key] = Tree(idx_key)        
+
+    for shard in shards:
+        local_client = MongoClient(shard, 27017)
+        local_coll = local_client.my_db.people
+        local_coll.create_index((idx_key))
+        for i in local_coll.find({}):
+            trees[idx_key].insert(i[idx_key], shard)
+    trees[idx_key].print_tree()
+    print(list(trees.keys()))
     print("success")
     return "success 200 main"
 

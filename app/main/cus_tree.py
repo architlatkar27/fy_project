@@ -4,6 +4,7 @@ class Data:
         self.values = set()
 
     def add_node(self, value):
+
         self.values.add(value)
 
 
@@ -22,7 +23,6 @@ class Tree:
             self.nodes[key].add_node(value)
         else:
             self.nodes[key].add_node(value)
-
     # Print the tree
     def print_tree(self):
         print("Index: " + str(self.index))

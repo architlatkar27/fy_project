@@ -42,3 +42,6 @@
     
 #     return list(return_list)
 # print(abc())
+
+from app import search
+print(search)
