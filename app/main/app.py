@@ -78,7 +78,7 @@ def test():
     '''
     print("success")
     x = []
-    for i in range(1, 5001):
+    for i in range(1, 6001):
         temp = search_test("age", i)
 
         with open('analytics.txt', 'a') as the_file:

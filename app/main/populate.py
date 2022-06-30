@@ -13,13 +13,13 @@ def init(collections, trees):
     return cnt/len(list(collections.items()))
 def create_names(fake, shard_name, coll_ptr, trees):
     cnt = 0
-    for x in range(100):
+    for x in range(10000):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()
         genCountry = fake.country()
         genSalary = randrange(10000, 100000, 1000)
-        genAge = randrange(1, 5000)
+        genAge = randrange(1, 6000)
         t1_start = process_time() 
         
         result = coll_ptr.insert_one(
