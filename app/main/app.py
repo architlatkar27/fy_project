@@ -71,8 +71,8 @@ def test():
     '''
     test
     '''
-    # print("success")
-    # return "success 200 main"
+    print("success")
+    return "success 200 main"
 
 @app.route('/search', methods=['POST'])
 def search():
