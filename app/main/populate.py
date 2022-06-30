@@ -11,7 +11,7 @@ def init(collections, trees):
         create_names(fake, shard_name, coll_ptr, trees)
 
 def create_names(fake, shard_name, coll_ptr, trees):
-    for x in range(100000):
+    for x in range(10000):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()
