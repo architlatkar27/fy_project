@@ -98,6 +98,64 @@ services:
       - configsvr04
 
 
+  ## Config server 06
+  configsvr06:
+    image: mongo:5.0.3
+    container_name: mongo-config-06 
+    command: |
+      mongod --port 27017 --configsvr --replSet rs-config-server
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27125:27017
+    links:
+      - configsvr05
+
+
+  ## Config server 07
+  configsvr07:
+    image: mongo:5.0.3
+    container_name: mongo-config-07 
+    command: |
+      mongod --port 27017 --configsvr --replSet rs-config-server
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27126:27017
+    links:
+      - configsvr06
+
+
+  ## Config server 08
+  configsvr08:
+    image: mongo:5.0.3
+    container_name: mongo-config-08 
+    command: |
+      mongod --port 27017 --configsvr --replSet rs-config-server
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27128:27017
+    links:
+      - configsvr07
+
+
+
+  ## Config server 09
+  configsvr09:
+    image: mongo:5.0.3
+    container_name: mongo-config-09 
+    command: |
+      mongod --port 27017 --configsvr --replSet rs-config-server
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27129:27017
+    links:
+      - configsvr08
+
+
+
 # Shards
 
   ## Shards 01   
@@ -260,6 +318,134 @@ services:
     ports:
       - 27144:27017
 
+  ## Shards 06
+  shard06-a:
+    image: mongo:5.0.3
+    container_name: shard-06-node-a
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-06
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27145:27017
+    links:
+      - shard06-b
+      - shard06-c
+  shard06-b:
+    image: mongo:5.0.3
+    container_name: shard-06-node-b
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-06
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27146:27017
+  shard06-c:
+    image: mongo:5.0.3
+    container_name: shard-06-node-c
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-06
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27147:27017
+
+  ## Shards 07
+  shard07-a:
+    image: mongo:5.0.3
+    container_name: shard-07-node-a
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-07
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27148:27017
+    links:
+      - shard07-b
+      - shard07-c
+  shard07-b:
+    image: mongo:5.0.3
+    container_name: shard-07-node-b
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-07
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27149:27017
+  shard07-c:
+    image: mongo:5.0.3
+    container_name: shard-07-node-c
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-07
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27150:27017
+
+  ## Shards 08
+  shard08-a:
+    image: mongo:5.0.3
+    container_name: shard-08-node-a
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-08
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27151:27017
+    links:
+      - shard08-b
+      - shard08-c
+  shard08-b:
+    image: mongo:5.0.3
+    container_name: shard-08-node-b
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-08
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27152:27017
+  shard08-c:
+    image: mongo:5.0.3
+    container_name: shard-08-node-c
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-08
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27153:27017
+
+  ## Shards 09
+  shard09-a:
+    image: mongo:5.0.3
+    container_name: shard-09-node-a
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-09
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27154:27017
+    links:
+      - shard09-b
+      - shard09-c
+  shard09-b:
+    image: mongo:5.0.3
+    container_name: shard-09-node-b
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-09
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27155:27017
+  shard09-c:
+    image: mongo:5.0.3
+    container_name: shard-09-node-c
+    command: |
+      mongod --port 27017 --shardsvr --replSet rs-shard-09
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - 27156:27017
+
   mongoexpress1:
     container_name: mongoexpress1
     image: mongo-express
@@ -285,6 +471,37 @@ services:
         - router02
     environment: 
         - ME_CONFIG_MONGODB_URL=mongodb://router-02:27017
+
+
+  mongoexpress_s1:
+    container_name: mongoexpress_s1
+    image: mongo-express
+    restart: unless-stopped
+    depends_on: 
+      - shard01-a
+    ports:
+        - "8011:8081"
+    links:
+        - shard01-a
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://shard-01-node-a:27017
+      
+
+
+
+  mongoexpress_s8:
+    container_name: mongoexpress_s8
+    image: mongo-express
+    restart: unless-stopped
+    depends_on: 
+      - shard08-a
+    ports:
+        - "8012:8081"
+    links:
+        - shard08-a
+    environment: 
+        - ME_CONFIG_MONGODB_URL=mongodb://shard-08-node-a:27017
+      
 
   ubuntu:
     container_name: ubuntu

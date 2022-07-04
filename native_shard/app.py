@@ -20,7 +20,7 @@ shard = "router01"
 
 def create_names(fake, shard_name, coll_ptr):
     cnt = 0
-    for x in range(100):
+    for x in range(1000):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()
