@@ -26,6 +26,13 @@ sh.addShard(
     "rs-shard-04/shard04-c:27017",
 )
 
+// Shard 5
+sh.addShard(
+    "rs-shard-05/shard05-a:27017",
+    "rs-shard-05/shard05-b:27017",
+    "rs-shard-05/shard05-c:27017",
+)
+
 // sh.addShard("rs-shard-01/shard01-a:27017")
 // sh.addShard("rs-shard-01/shard01-b:27017")
 // sh.addShard("rs-shard-01/shard01-c:27017")
