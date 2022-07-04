@@ -5,7 +5,8 @@ var config_server = {
     members: [ 
         { _id: 0, host : 'configsvr01:27017' },
         { _id: 1, host : 'configsvr02:27017' },
-        { _id: 2, host : 'configsvr03:27017' }
+        { _id: 2, host : 'configsvr03:27017' },
+        { _id: 3, host : 'configsvr04:27017' }
     ]
 };
 
