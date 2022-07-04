@@ -21,13 +21,13 @@ shards_cnt = 9
 
 def create_names(fake, shard_name, coll_ptr):
     cnt = 0
-    for x in range(100000*shards_cnt):
+    for x in range(100*shards_cnt):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()
         genCountry = fake.country()
         genSalary = randrange(10000, 100000, 1000)
-        genAge = randrange(1, 6000)
+        genAge = randrange(1, 9)
         t1_start = process_time() 
         
         result = coll_ptr.insert_one(
@@ -62,7 +62,7 @@ def insert_bulk():
     client = MongoClient(shard, 27017)
     db = client.my_db
     coll = db.people
-    coll.create_index('age')
+    # coll.create_index('age')
 
     fake = Faker()
     avg_tm = create_names(fake, shard, coll)
