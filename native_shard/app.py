@@ -17,10 +17,11 @@ app = Flask(__name__)
 # temp1 = "localhost"
 # shards = ["mongos1", "mongos2", "mongos3", "mongos4", "mongos5", "mongos6"]
 shard = "router01"
+shards_cnt = 9
 
 def create_names(fake, shard_name, coll_ptr):
     cnt = 0
-    for x in range(1000):
+    for x in range(100000*shards_cnt):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()
@@ -61,6 +62,7 @@ def insert_bulk():
     client = MongoClient(shard, 27017)
     db = client.my_db
     coll = db.people
+    coll.create_index('age')
 
     fake = Faker()
     avg_tm = create_names(fake, shard, coll)
