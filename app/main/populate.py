@@ -13,7 +13,8 @@ def init(collections, trees):
     return cnt/len(list(collections.items()))
 def create_names(fake, shard_name, coll_ptr, trees):
     cnt = 0
-    for x in range(10000):
+    mx_recs = 10000
+    for x in range(mx_recs):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()
@@ -36,7 +37,7 @@ def create_names(fake, shard_name, coll_ptr, trees):
         trees["age"].insert(genAge, shard_name)
         t2_start = process_time() 
         cnt += (t2_start - t1_start)
-    return cnt/100
+    return cnt/mx_recs
         # trees["salary"].insert((genSalary, cont))
         # trees["country"].insert((genCountry, cont))
         # B.insert(genJob,coll);
