@@ -1,23 +1,28 @@
 # from crypt import methods
+from concurrent.futures import process
+import imp
 from itertools import count
+import re
+from this import s
 from flask import Flask,request
 import json
 from populate import init
 from pymongo import MongoClient
-import index
+# import index
+from cus_tree import Tree
 from threading import Thread
 import threading
 from requests import post, get
 from index import BTree;
 from bson.json_util import dumps
-import time
-from collections import Counter
+from time import process_time
+import multiprocessing
 
 app = Flask(__name__)
 
-N = 10
+N = 9
 
-shards = ["mongos"+str(x) for x in range(1, N)]
+shards = ["mongos"+str(x) for x in range(1, N+1)]
 
 collections = {}
 
@@ -31,46 +36,33 @@ def startup():
     global trees
     global collections
     global shards
-    # make connections, db and map collections to shards
-    dbconfig = request.get_json()
-    if not dbconfig:
-        for shard in shards:
-            client = MongoClient(shard, 27017)
-            db = client.my_db
-            collection = db.people
-            collections[shard] = collection
-            collection.create_index('country')
-            collection.create_index('age')
-            collection.create_index('salary')
+    for shard in shards:
+        client = MongoClient(shard, 27017)
+        db = client.my_db
+        collection = db.people
+        collections[shard] = collection
+        # collection.create_index('country')
+        collection.create_index('age')
+        # collection.create_index('salary')
 
 
-        indices = ["age", "salary", "country"]
-        trees = {
-            "age": BTree(30, -1),
-            "salary": BTree(30, -1),
-            "country": BTree(30, " ")
-        }
-        init(collections, trees)
-        # B.print_tree(B.root)
-        trees["age"].print_tree(trees["age"].root)
-        trees["salary"].print_tree(trees["salary"].root)
-        trees["country"].print_tree(trees["country"].root)
-        return "db with people initialized"
-    else:
-        # use pymongo to create db, create collection, create index, 
-        for shard in shards:
-            client = MongoClient(shard, 27017)
-            db = client[dbconfig["db_name"]]
-            collection = db[dbconfig["collection_name"]]
-            collections[shard] = collection
-            for index in dbconfig["index_list"]:
-                collection.create_index(index["index_key"])
-        
-        for index in dbconfig["index_list"]:
-            indices.append(index["index_key"])
-            trees[index["index_key"]] = BTree(20, index["default"])
-        return "random db initialization complete"
-    
+    indices = ["age"]
+    # indices = ["age", "salary", "country"]
+    trees = {
+        "age": Tree("age"),
+        # "salary": BTree(30, -1),
+        # "country": BTree(30, " ")
+    }
+    # t1_start = process_time() 
+
+    avg_tm = init(collections, trees)
+    # t2_start = process_time() 
+    # avg_tm = (t2_start - t1_start)
+    # B.print_tree(B.root)
+    # trees["age"].print_tree()
+    # trees["salary"].print_tree(trees["salary"].root)
+    # trees["country"].print_tree(trees["country"].root)
+    return "db with people initialized, avg_time for each write: " + str(avg_tm)
 
 # Startup procedure - 
 # 1. make connections and then on to collections
@@ -79,134 +71,104 @@ def startup():
 # 4. send write request to that particular mongo node
 # do this `100 times`
 
-class ThreadWithReturnValue(Thread):
-    '''
-    A custom Thread class which allows 
-    '''
-    def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}, Verbose=None):
-        Thread.__init__(self, group, target, name, args, kwargs)
-        self._return = None
-    def run(self):
-        print(type(self._target))
-        if self._target is not None:
-            self._return = self._target(*self._args,
-                                                **self._kwargs)
-    def join(self, *args):
-        Thread.join(self, *args)
-        return self._return
-
-
-root = 0 # initialize root with index tree root. maybe for now we can move the init part over here.
-nodes = []
-
-def initializer():
-    pass
-
 @app.route('/test', methods=['GET'])
 def test():
     '''
     test
     '''
     print("success")
+    x = []
+    for i in range(1, 6001):
+        temp = search_test("age", i)
+
+        with open('analytics.txt', 'a') as the_file:
+            the_file.write(temp)
+
     return "success 200 main"
 
-@app.route('/execute', methods=['GET'])
-def query_collector():
-    '''
-    Recieve query string
-    call function to get node list
-    call function to send request to all nodes and collect all the responses and send back
-    return the consolidated response
-    '''
-    t1 = time.time()
+@app.route('/search', methods=['POST'])
+def search():
     data = request.get_json()
-    keys = list(data.keys())
-    key = keys[0]
-    x = nodeSelector(data, key)
-    if x is False:
-        return "no data found"
-    n_nodes = len(x.nodes)
-    answer = consildator(data, x.nodes)
-    t2 = time.time()
-    answer.append({"execution time": str(t2-t1)})
-    answer.append({"number of nodes queried": str(n_nodes)})
-    print("Execution time: {}".format(t2-t1))
-    return json.dumps(answer)
+    query_key = data["query_key"]
+    query_val = data["query_val"]
+    # print(list(trees.keys()))
+    if query_key in list(trees.keys()):
+        idx = query_key
+        tree = trees[idx]
+        t1_start = process_time() 
+        shards_lst = list(tree.search_key(query_val))
+        res = search_shards(query_key, query_val, shards_lst)
+        t2_start = process_time() 
+        sz = len(res)
+        # res.append({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        x = ({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        return str(x)
+    else:
+        return "index not found " + str(list(trees.keys())) 
 
-def nodeSelector(data, key):
-    '''
-    Recieve a request, use the index to determine subset of nodes to send the data to.
-    '''
-    global shards
-    if key not in indices:
-        return shards 
-    value = data[key] 
-    x = trees[key].search_key(value)
-    return x
+    print("success")
+    return "success 200 main"
 
-def consildator(data, nodes):
-    '''
-    asynchronously send requests to all the nodes, collect response and consolidate in one
-    '''
-    req_threads = []
-    print(nodes)
-    for i, x in enumerate(nodes):
-        req_threads.append(ThreadWithReturnValue(target=query_forward, args=(data, x)))
-        req_threads[i].start()
-    answers = []
-    print(answers)
-    for x in req_threads:
-        answers.append(x.join())  
-    return answers
-
-def query_forward(data, node):
-    '''
-    forward query to individual node and give back the response
-    '''
-    # send request to single node app
-    coll = collections[node]
-    resp = dumps(coll.find(data))
-    # print(resp)
-    return resp
+def search_test(query_key, query_val):    
+    if query_key in list(trees.keys()):
+        idx = query_key
+        tree = trees[idx]
+        t1_start = process_time() 
+        shards_lst = list(tree.search_key(query_val))
+        res = search_shards(query_key, query_val, shards_lst)
+        t2_start = process_time() 
+        sz = len(res)
+        # res.append({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        x = str(t2_start-t1_start) + "," + str(sz) + "," + str(len(shards_lst)) + "\n"
+        return x
+    return ""
 
 
-@app.route('/write', methods=['GET'])
-def write_query():
-    '''
-    take the data from the json
-    query different indices and obtain the different nodes
-    select the node with max frequency -- if no nodes then just select random node
-    insert into the index
-    insert data in that node
-    '''
-
+@app.route('/reindex', methods=['POST'])
+def reindex():
     data = request.get_json()
-    node = poll(data)
-    insert_index(data, node)
-    result = collections[node].insert_one(data)
+    idx_key = data["index_key"]
+    trees[idx_key] = Tree(idx_key)        
 
-    return "write was successful in node {}".format(node)
+    for shard in shards:
+        local_client = MongoClient(shard, 27017)
+        local_coll = local_client.my_db.people
+        local_coll.create_index((idx_key))
+        for i in local_coll.find({}):
+            trees[idx_key].insert(i[idx_key], shard)
+    # trees[idx_key].print_tree()
+    # print(list(trees.keys()))
+    print("success")
+    return "success 200 main"
 
+def search_shard(key, val, shard, return_list):
+    # lst = []
+    print("Helllllo")
+    local_client = MongoClient(shard, 27017)
+    local_coll = local_client.my_db.people
+    # collection = db.people
+    for i in local_coll.find({key:val}):
+        i["shard"] = shard
+        # print(i)
+        return_list.append(i)
+    # return lst
 
-def insert_index(data, node):
-    for index in indices:
-        trees[index].insert((data[index], node))
-    
+def search_shards(key, val, shards):
+    manager = multiprocessing.Manager()
+    return_list = manager.list()
+    jobs = []
+    for shard in shards:
+        # data_shard_i = search_shard(key, val, shard)
+        # coll_shard = collections[shard]
+        process = multiprocessing.Process(target=search_shard, args=(key, val, shard, return_list))
+        jobs.append(process)
+        process.start()
+        # lst.extend(data_shard_i)
 
-def poll(data):
-    '''
-    take data and then poll all of the indices for the prefered node
-    '''
-    possible_nodes = []
-    for index in indices:
-        val = data[index]
-        x = trees[index].search_key(val)
-        if x is False:
-            continue
-        possible_nodes.extend(x.nodes)
-    return Counter(possible_nodes).most_common(1)[0][0]
-
+    for j in jobs:
+        j.join()
+    # print(return_list)
+    return return_list
 
     
 if __name__ == '__main__':
@@ -216,22 +178,3 @@ if __name__ == '__main__':
     # startup()
 
     app.run(host="0.0.0.0", port=8080, debug=True)
-
-
-
-# # startup api
-
-# # call to initialize a new database
-# # send a json response - 
-# # {
-# #     "db": db_name,
-# #     "collection": collection_name,
-# #     "index list": [{
-# #       "index key": key,
-#         "default value": val
-# # }, "index2"]
-# # }
-# if its {
-#     "db": default
-# }
-# then go ahead with people database and populate it else just make the connection, index  and leave it as it is

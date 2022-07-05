@@ -7,7 +7,7 @@ client = MongoClient('localhost', 27017)
 db = client.my_db
 
 def create_names(fake):
-    for x in range(1000):
+    for x in range(100):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()
