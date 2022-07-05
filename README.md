@@ -42,6 +42,6 @@ Docker Swarm setup:
 		- docker container run -d --name node1 --network appName --env PYTHONUNBUFFERED=1 --env node_id=1 -p 5001:5000 --hostname localhost abhishekvtangod/abc
 		- docker container run -d --name node2 --network appName --env PYTHONUNBUFFERED=1 --env node_id=2 -p 5002:5000 --hostname localhost abhishekvtangod/abc
 		- docker container run -d --name node3 --network appName --env PYTHONUNBUFFERED=1 --env node_id=3 -p 5003:5000 --hostname localhost abhishekvtangod/mno
-		- docker container run -d --name cloud --network appName --env PYTHONUNBUFFERED=1 -p 5000:5000 --hostname localhost abhishekvtangod/pqr
+		- docker container run -d --name main_node --network appName --env PYTHONUNBUFFERED=1 -p 5000:5000 --hostname localhost abhishekvtangod/pqr
 
 	11. Access all the urls from individual ips of VM with appropriate ports(change port mappings according to your ease and avoid confusions).
