@@ -20,8 +20,6 @@ mongosX: Mongod data server with three replica sets containing 3 nodes each (9 s
 mongoexpressX: UI for each shard
 main_node: The algorithm on flask server
 
-
-
 Docker Swarm setup:
 (Change the env variables, docker container configs accordingly)
 
@@ -45,3 +43,54 @@ Docker Swarm setup:
 		- docker container run -d --name main_node --network appName --env PYTHONUNBUFFERED=1 -p 5000:5000 --hostname localhost abhishekvtangod/pqr
 
 	11. Access all the urls from individual ips of VM with appropriate ports(change port mappings according to your ease and avoid confusions).
+
+
+
+
+How to run native_shard?
+
+Init:
+
+```bash
+Run the containers:
+docker-compose up -d
+
+Initialize config servers:
+bash bash/init-configserver.sh
+
+Initialize shards: 
+bash bash/init-replicaset.sh 
+
+After initializing config servers and shards, wait a bit to elect primaries before initializing router:
+bash bash/init-router.sh 
+
+```
+
+Verify Status:
+
+
+```bash
+before checking the status verify if all the containers are up:
+docker container ls
+
+status of replica:
+docker exec -it shard-01-node-a bash 
+Inside VM: mongo
+Mongo shell: rs.status()
+
+status of router:
+docker-compose exec router01 mongo --port 27017
+Inside mongo shell:  sh.status()
+```
+
+Enable sharding and partition key for the DB:
+```bash
+sh.enableSharding('my_db');
+sh.shardCollection('my_db.people',{'age':"hashed"});
+```
+
+
+Clean up:
+```bash
+bash clean_all.sh 
+```

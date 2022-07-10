@@ -21,7 +21,7 @@ shards_cnt = 9
 
 def create_names(fake, shard_name, coll_ptr):
     cnt = 0
-    for x in range(100*shards_cnt):
+    for x in range(10000*shards_cnt):
         genName = fake.first_name()
         genSurname = fake.last_name()
         genJob = fake.job()
