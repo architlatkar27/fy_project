@@ -10,7 +10,7 @@ class Data:
         self.nodes.append(node)
 
 
-class BTreeNode:
+class TreeNode:
     '''
     leaf: bool -- indicates whether node is leaf node or not
     keys: list -- list of Data objects
@@ -26,7 +26,7 @@ class BTreeNode:
         return "is leaf: {}\nkeys: {}\nchild: {}".format(self.leaf, self.keys, self.child)
 
 # Tree
-class BTree:
+class Tree:
     '''
     root: BtreeNode -- root node
     t:    int -- degree of each node
@@ -35,7 +35,7 @@ class BTree:
     search_key(): search for key in the btree
     '''
     def __init__(self, t, default):
-        self.root = BTreeNode(True)
+        self.root = TreeNode(True)
         self.t = t
         self.default = default
         print("created btree")
@@ -45,7 +45,7 @@ class BTree:
         root = self.root
         # print(root)
         if len(root.keys) == (2 * self.t) - 1:
-            temp = BTreeNode()
+            temp = TreeNode()
             self.root = temp
             temp.child.insert(0, root)
             self.split_child(temp, 0)
@@ -86,7 +86,7 @@ class BTree:
     def split_child(self, x, i):
         t = self.t
         y = x.child[i]
-        z = BTreeNode(y.leaf)
+        z = TreeNode(y.leaf)
         x.child.insert(i + 1, z)
         x.keys.insert(i, y.keys[t - 1])
         z.keys = y.keys[t: (2 * t) - 1]

@@ -100,9 +100,9 @@ def search():
         res = search_shards(query_key, query_val, shards_lst)
         t2_start = process_time() 
         sz = len(res)
-        # res.append({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
-        x = ({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
-        return str(x)
+        res.append({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        # x = ({"time_elapsed":(t2_start-t1_start), "result size":(sz), "no of shards queried":len(shards_lst)})
+        return str(res)
     else:
         return "index not found " + str(list(trees.keys())) 
 
